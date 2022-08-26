@@ -32,8 +32,27 @@ az group create --name demo-huggingface --location "East US"
 ```
 az appservice plan create --name "demo-huggingface" --resource-group demo-huggingface --is-linux --sku FREE
 ```
-1. Create the web app with a placeholder container
+1. Create a random identifier for a unique webapp name:
 ```
-az webapp create --name "demo-huggingface" --resource-group demo-huggingface --plan demo-huggingface --deployment-container-image mcr.microsoft.com/appsvc/staticsite:latest
+let "randomIdentifier=$RANDOM*$RANDOM"
 ```
-1. Head to the [App Service](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Web%2Fsites)
+1. Create the web app with a placeholder container using the `randomIdentifier` from before
+```
+az webapp create --name "demo-huggingface-$randomIdentifier" --resource-group demo-huggingface --plan demo-huggingface --deployment-container-image mcr.microsoft.com/appsvc/staticsite:latest
+```
+1. Head to the [App Service](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Web%2Fsites) and confirm that your service is up and running
+
+
+## Create an Azure Service Principal
+
+You'll need the following:
+
+1. An Azure subscription ID [find it here](https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBlade) or [follow this guide](https://docs.microsoft.com/en-us/azure/azure-portal/get-subscription-tenant-id)
+1. A Service Principal with the following details the AppID, password, and tenant information. Create one with: `az ad sp create-for-rbac -n "REST API Service Principal"` and assign the IAM role for the subscription. Alternatively set the proper role access using the following command (use a real subscription id and replace it):
+
+```
+az ad sp create-for-rbac --name "CICD" --role contributor --scopes /subscriptions/$AZURE_SUBSCRIPTION_ID --sdk-auth
+```
+
+Capture the JSON output and add it as a [repository secret](/../../settings/secrets/actions/new) with the name `AZURE_CREDENTIALS`
+
