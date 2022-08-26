@@ -43,16 +43,12 @@ az webapp create --name "demo-huggingface-$randomIdentifier" --resource-group de
 1. Head to the [App Service](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Web%2Fsites) and confirm that your service is up and running
 
 
-## Create an Azure Service Principal
+## Create a Deployment profile
 
-You'll need the following:
-
-1. An Azure subscription ID [find it here](https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBlade) or [follow this guide](https://docs.microsoft.com/en-us/azure/azure-portal/get-subscription-tenant-id)
-1. A Service Principal with the following details the AppID, password, and tenant information. Create one with: `az ad sp create-for-rbac -n "REST API Service Principal"` and assign the IAM role for the subscription. Alternatively set the proper role access using the following command (use a real subscription id and replace it):
+Run the following command with the `az` cli:
 
 ```
-az ad sp create-for-rbac --name "CICD" --role contributor --scopes /subscriptions/$AZURE_SUBSCRIPTION_ID --sdk-auth
+az webapp deployment list-publishing-profiles --resource-group demo-huggingface --name demo-huggingface --xml
 ```
 
-Capture the JSON output and add it as a [repository secret](/../../settings/secrets/actions/new) with the name `AZURE_CREDENTIALS`
-
+Capture the output and add it as a [repository secret](/../../settings/secrets/actions/new) with the name `AZURE_WEBAPP_PUBLISH_PROFILE`
