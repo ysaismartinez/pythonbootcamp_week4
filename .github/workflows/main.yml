@@ -4,7 +4,7 @@ name: Trigger auto deployment for demo-container
 
 env:
   # !!!! UPDATE THE VARIABLE BELOW WITH YOUR APP NAME !!!!
-  AZURE_WEB_APP_NAME:
+  AZURE_WEBAPP_NAME:
 
 # When this action will be executed
 on:
