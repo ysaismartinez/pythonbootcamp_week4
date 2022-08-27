@@ -72,3 +72,20 @@ Capture the output and add it as a [repository secret](/../../settings/secrets/a
 The access token will need to be added as an Action secret. [Create one](https://github.com/settings/tokens/new?description=Azure+Container+Apps+access&scopes=write:packages) with enough permissions to write to packages.
 
 Capture the output and add it as a [repository secret](/../../settings/secrets/actions/new) with the name `PAT`
+
+## Recommendations
+
+When deploying, you might encounter errors or problems, either on the autonatiom part of it (GitHub Actions) or on the deployment destination (Azure WebApps). Here are a list of things to check for, and some suggestions on how to ensure that the deployment is correct.
+
+* Not having enough RAM per container
+* Not using authentication for accessing the remote registry (ghcr.io in this case). Authentication is always required
+* Not using a PAT (Personal Access Token) or using a PAT that doesn't have write permissions for "packages".
+* Different port than 8000 in the container. By default Azure Container Apps use 80 and the automation updates a config option to map it to 8000.
+
+If running into trouble, check logs in the portal or use the following with the Azure CLI:
+
+```
+az webapp log tail --name $AZURE_WEBAPP_NAME --resource-group $AZURE_RESOURCE_GROUP
+```
+
+Update both variables to match your environment
