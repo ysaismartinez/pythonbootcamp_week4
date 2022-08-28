@@ -1,20 +1,20 @@
-# Container MLOps Template repository
+# Containerized Python API Template repository
 
 Learn how to create a container and package it with GitHub Actions. This repository template gives you a good starting point for a Dockerfile, GitHub Actions workflow, and Python code.
 
-Depending on the type of model you need, you will need different workflow steps and most definitely a different `main.py` file. The default uses FastApi
 
-# Learn objectives
+## Learn objectives
 
-*
-*
-*
-*
-*
+* Containerize a Python application that uses FastAPI
+* Use automation to deploy it to the cloud
+* Setup GitHub Action to authenticate to Azure
+* Automatically push new changes
+* Debug cloud deployment 
+
 
 ## Deploy your API to the Azure Cloud
 
-This deployment can be done at no cost, using free resources with an Azure subscription. Use one of these to deploy this:
+This deployment can be done at no cost, using free resources with an Azure subscription. Use one of these to deploy it:
 
 - [Sign in to your account]()
 - [Create a (no Credit Card required) Azure For Students account]()
@@ -26,11 +26,11 @@ This deployment can be done at no cost, using free resources with an Azure subsc
 1. Open an [Azure Cloud Shell](https://shell.azure.com/?WT.mc_id=academic-0000-alfredodeza) to use the `az` cli
 1. Create a *Resource Group*:
 ```
-az group create --name demo-huggingface --location "East US"
+az group create --name demo-fastapi --location "East US"
 ```
 1. Create the **FREE** App Service Plan:
 ```
-az appservice plan create --name "demo-huggingface" --resource-group demo-huggingface --is-linux --sku FREE
+az appservice plan create --name "demo-fastapi" --resource-group demo-fastapi --is-linux --sku FREE
 ```
 1. Create a random identifier for a unique webapp name:
 ```
@@ -38,7 +38,7 @@ let "randomIdentifier=$RANDOM*$RANDOM"
 ```
 1. Create the web app with a placeholder container using the `randomIdentifier` from before
 ```
-az webapp create --name "demo-huggingface-$randomIdentifier" --resource-group demo-huggingface --plan demo-huggingface --deployment-container-image mcr.microsoft.com/appsvc/staticsite:latest
+az webapp create --name "demo-fastapi-$randomIdentifier" --resource-group demo-fastapi --plan demo-fastapi --deployment-container-image mcr.microsoft.com/appsvc/staticsite:latest
 ```
 1. Head to the [App Service](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Web%2Fsites) and confirm that your service is up and running
 
@@ -48,7 +48,7 @@ az webapp create --name "demo-huggingface-$randomIdentifier" --resource-group de
 Run the following command with the `az` cli:
 
 ```
-az webapp deployment list-publishing-profiles --resource-group demo-huggingface --name demo-huggingface --xml
+az webapp deployment list-publishing-profiles --resource-group demo-fastapi --name demo-fastapi --xml
 ```
 
 Capture the output and add it as a [repository secret](/../../settings/secrets/actions/new) with the name `AZURE_WEBAPP_PUBLISH_PROFILE`
@@ -69,9 +69,35 @@ Capture the output and add it as a [repository secret](/../../settings/secrets/a
 
 ## Generate a PAT
 
-The access token will need to be added as an Action secret. [Create one](https://github.com/settings/tokens/new?description=Azure+Container+Apps+access&scopes=write:packages) with enough permissions to write to packages.
+The access token will need to be added as an Action secret. [Create one](https://github.com/settings/tokens/new?description=Azure+Container+Apps+access&scopes=write:packages) with enough permissions to write to packages. If you follow the link, it should have everything pre-selected.
 
 Capture the output and add it as a [repository secret](/../../settings/secrets/actions/new) with the name `PAT`
+
+## Update workflow file
+
+Now that you have everything created, you need to update the [.github/workflows/main.yml](/../../edit/main/.github/workflows/main.yml) file and add:
+
+- `AZURE_WEBAPP_NAME`
+- `AZURE_GROUP_NAME`
+
+## Deploy
+
+Before continuing, check the following:
+
+1. You have a PAT (Personal Access Token) saved as a [repository secret](/../../settings/secrets/)
+1. You've created an Azure Service Principal and saved it as a [repository secret](/../../settings/secrets/) as `AZURE_CREDENTIALS`
+1. You've saved the XML for the publish profile and saved it as a [repository secret](/../../settings/secrets/) as `AZURE_WEBAPP_PUBLISH_PROFILE`
+1. You've created an [App Service](https://portal.azure.com/#view/HubsExtension/BrowseResource/resourceType/Microsoft.Web%2Fsites) with a valid name and the site is already available with the default static content
+
+To deploy:
+
+1. Go to [repository actions](/../../actions/workflows/main.yml) and click on _Run workflow_ and then the green button to run it.
+
+**Deploying can take a couple of minutes**. Make sure you tail the logs in the Azure cloud shell to check the progress:
+
+```
+az webapp log tail --name $AZURE_WEBAPP_NAME --resource-group $AZURE_RESOURCE_GROUP
+```
 
 ## Recommendations
 
@@ -89,3 +115,10 @@ az webapp log tail --name $AZURE_WEBAPP_NAME --resource-group $AZURE_RESOURCE_GR
 ```
 
 Update both variables to match your environment
+
+## Resources 
+
+Use the following links to useful and relevant resources that can help you deploy this API
+
+- [Deploying containers to Azure](https://learning.oreilly.com/videos/deploying-containers-to/50135VIDEOPAIML/)
+- [Azure in GitHub Actions](https://learning.oreilly.com/videos/azure-in-github/50140VIDEOPAIML/)
