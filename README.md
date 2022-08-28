@@ -80,6 +80,27 @@ Now that you have everything created, you need to update the [.github/workflows/
 - `AZURE_WEBAPP_NAME`
 - `AZURE_GROUP_NAME`
 
+## Test locally
+
+Make sure that everything runs locally. This repository is Codespaces-enabled that has already installed the `requirements.txt` file for you. To run the application, go to the `webapp/` directory and run:
+
+```
+uvicorn --host 0.0.0.0 main:app
+```
+
+You should see output like:
+
+```
+INFO:     Started server process [5579]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+```
+
+The site will be available at the host's port 8000. Try out the API by going to `/docs`. 
+
+If in a Codespace, you will get a notification in VSCode that the site is available. Otherwise look at the ports available for the application and click on port `8000`
+
 ## Deploy
 
 Before continuing, check the following:
