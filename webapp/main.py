@@ -1,16 +1,18 @@
-from transformers import pipeline
+from datetime import datetime
+from os.path import dirname, abspath, join
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-generator = pipeline('text-generation', model='gpt2')
+current_dir = dirname(abspath(__file__))
+static_path = join(current_dir, "static")
 
 app = FastAPI()
-app.mount("/ui", StaticFiles(directory="static"), name="ui")
+app.mount("/ui", StaticFiles(directory=static_path), name="ui")
 
 class Body(BaseModel):
-    text: str
+    strftime: str
 
 
 @app.get('/')
@@ -19,6 +21,10 @@ def root():
 
 
 @app.post('/generate')
-def predict(body: Body):
-    results = generator(body.text, max_length=35, num_return_sequences=1)
-    return results[0]
+def generate(body: Body):
+    """
+    Generate the current time given a strftime template. For example:
+    '%Y-%m-%dT%H:%M:%S.%f'
+    """
+    tmpl = body.strftime or '%Y-%m-%dT%H:%M:%S.%f'
+    return {'date': datetime.now().strftime(tmpl)}
