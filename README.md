@@ -120,6 +120,14 @@ To deploy:
 az webapp log tail --name $AZURE_WEBAPP_NAME --resource-group $AZURE_RESOURCE_GROUP
 ```
 
+## Destroy resources when complete
+
+After deploying, make sure you cleanup your resources by destroying the resource group. You can do it by re-using the group name you created initially (`demo-fastapi` in the examples):
+
+```
+az group delete --name demo-fastapi
+```
+
 ## Recommendations
 
 When deploying, you might encounter errors or problems, either on the autonatiom part of it (GitHub Actions) or on the deployment destination (Azure WebApps). Here are a list of things to check for, and some suggestions on how to ensure that the deployment is correct.
