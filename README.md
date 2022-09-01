@@ -48,7 +48,7 @@ az webapp create --name "demo-fastapi-$randomIdentifier" --resource-group demo-f
 Run the following command with the `az` cli:
 
 ```
-az webapp deployment list-publishing-profiles --resource-group demo-fastapi --name demo-fastapi --xml
+az webapp deployment list-publishing-profiles --resource-group demo-fastapi --name demo-fastapi-$randomIdentifier --xml
 ```
 
 Capture the output and add it as a [repository secret](/../../settings/secrets/actions/new) with the name `AZURE_WEBAPP_PUBLISH_PROFILE`
