@@ -4,7 +4,7 @@ COPY ./requirements.txt /webapp/requirements.txt
 
 WORKDIR /webapp
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY webapp /webapp
 
